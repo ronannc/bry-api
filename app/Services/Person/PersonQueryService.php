@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services\Company;
+namespace App\Services\Person;
 
-use App\Models\Company;
+use App\Models\Person;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 
-class CompanyQueryService
+class PersonQueryService
 {
-    public function search(int $id = null): Paginator|Company
+    public function search(int $id = null): Paginator|Person
     {
         if ($id) {
             return $this->query()->findOrFail($id);
@@ -19,9 +19,8 @@ class CompanyQueryService
 
     private function query(): Builder
     {
-        return Company::with([
-            'employees',
-            'clients'
+        return Person::with([
+            'companies',
         ]);
     }
 }
