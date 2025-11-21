@@ -3,27 +3,32 @@
 namespace App\Services\Person;
 
 use App\Models\Person;
-use Illuminate\Support\Facades\Storage;
+use App\Services\StorageDocumentService;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class PersonCreateService
 {
+    public function __construct(
+        protected StorageDocumentService $storageDocumentService
+    ) {}
+
+    /**
+     * @throws Throwable
+     */
     public function create(array $data): Person
     {
-        if (isset($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
-        }
-        // Upload do documento se existir
-        if (request()->hasFile('document')) {
-            $data = $this->storageDocument($data);
-        }
-        return Person::create($data);
-    }
+        return DB::transaction(function () use ($data)
+        {
+            if (isset($data['password'])) {
+                $data['password'] = bcrypt($data['password']);
+            }
+            // Upload do documento se existir
+            if (request()->hasFile('document')) {
+                $data = $this->storageDocumentService->storageDocument($data);
+            }
 
-    public function storageDocument(array $data): array
-    {
-        $file = request()->file('document');
-        $path = Storage::disk('s3')->put('documents', $file);
-        $data['document_path'] = $path;
-        return $data;
+            return Person::create($data);
+        });
     }
 }

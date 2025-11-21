@@ -25,7 +25,14 @@ class Person extends Authenticatable
 
     public function companies(): BelongsToMany
     {
-        return $this->belongsToMany(Company::class, 'rl_persons_companies', 'persons_id', 'company_id');
+        return $this->belongsToMany(
+            Company::class,
+            'rl_persons_companies',
+            'person_id',
+            'company_id',
+            'id',
+            'id',
+        );
     }
 }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PersonRequest extends FormRequest
 {
@@ -13,9 +14,9 @@ class PersonRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('person');
+        $id = $this->route('persons') ?? '';
         return [
-            'login' => 'required|string|max:255|unique:people,login,' . $id,
+            'login' => ['required', 'string', 'max:255', Rule::unique('persons', 'login')->ignore($id)],
             'name' => 'required|string|max:255',
             'cpf' => 'required|string|max:14',
             'email' => 'required|email|max:255',
