@@ -8,22 +8,20 @@ use Illuminate\Database\Eloquent\Builder;
 
 class PersonQueryService
 {
-    public function search(int $id = null): Paginator|Person
+    public function search(array $filters, int $id = null): Paginator|Person
     {
         if ($id) {
-            $person = $this->query()->findOrFail($id);
+            $person = $this->person($filters)->findOrFail($id);
             $person->append('document_url');
             return $person;
         }
 
-        return $this->query()->simplePaginate();
+        return $this->person($filters)->paginate();
     }
 
-    private function query(): Builder
+    private function person(array $filters): Builder
     {
-        return Person::with([
-            'companies',
-        ]);
+        return Person::filter($filters);
     }
 }
 

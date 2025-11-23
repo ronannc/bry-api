@@ -7,30 +7,35 @@ use App\Services\Person\PersonCreateService;
 use App\Services\Person\PersonDeleteService;
 use App\Services\Person\PersonQueryService;
 use App\Services\Person\PersonUpdateService;
+use Illuminate\Http\Request;
+use Throwable;
 
 class PersonController extends Controller
 {
     public function __construct(
-        protected PersonQueryService $queryService,
+        protected PersonQueryService  $queryService,
         protected PersonCreateService $createService,
         protected PersonUpdateService $updateService,
         protected PersonDeleteService $deleteService
-    ) {}
+    ){}
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->queryService->search());
+        return response()->json($this->queryService->search($request->get('filters', [])));
     }
 
+    /**
+     * @throws Throwable
+     */
     public function store(PersonRequest $request)
     {
         $person = $this->createService->create($request->validated());
         return response()->json($person, 201);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $person = $this->queryService->search($id);
+        $person = $this->queryService->search($request->get('filters', []), $id);
         return response()->json($person);
     }
 

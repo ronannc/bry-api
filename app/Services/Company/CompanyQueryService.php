@@ -11,18 +11,10 @@ class CompanyQueryService
     public function search(int $id = null): Paginator|Company
     {
         if ($id) {
-            return $this->query()->findOrFail($id);
+            return Company::findOrFail($id);
         }
 
-        return $this->query()->simplePaginate();
-    }
-
-    private function query(): Builder
-    {
-        return Company::with([
-            'employees',
-            'clients'
-        ]);
+        return Company::paginate();
     }
 }
 
