@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
 
 class Person extends Authenticatable
 {
@@ -33,6 +34,11 @@ class Person extends Authenticatable
             'id',
             'id',
         );
+    }
+
+    public function getDocumentUrlAttribute(): ?string
+    {
+        return $this->document_path ? Storage::disk('s3temp')->temporaryUrl($this->document_path, now()->addMinutes(5)) : null;
     }
 }
 

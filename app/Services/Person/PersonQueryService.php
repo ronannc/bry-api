@@ -11,7 +11,9 @@ class PersonQueryService
     public function search(int $id = null): Paginator|Person
     {
         if ($id) {
-            return $this->query()->findOrFail($id);
+            $person = $this->query()->findOrFail($id);
+            $person->append('document_url');
+            return $person;
         }
 
         return $this->query()->simplePaginate();
