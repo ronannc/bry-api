@@ -10,7 +10,6 @@ class CompanyControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-
     public function test_can_list_companies()
     {
         Company::factory()->count(3)->create();
@@ -37,7 +36,7 @@ class CompanyControllerTest extends TestCase
         $update = [
             'name' => 'Empresa Atualizada',
             'cnpj' => $company->cnpj,
-            'address' => (string) ($company->address ?? '')
+            'address' => (string)($company->address ?? '')
         ];
         $response = $this->putJson("/api/companies/{$company->id}", $update);
         $response->assertStatus(200)

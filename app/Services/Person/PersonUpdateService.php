@@ -12,9 +12,7 @@ class PersonUpdateService
 {
     public function __construct(
         protected StorageDocumentService $storageDocumentService
-    )
-    {
-    }
+    ) {}
 
     public function update($id, array $data)
     {

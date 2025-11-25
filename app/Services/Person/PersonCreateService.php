@@ -12,9 +12,7 @@ class PersonCreateService
 {
     public function __construct(
         protected StorageDocumentService $storageDocumentService
-    )
-    {
-    }
+    ) {}
 
     /**
      * @throws Throwable
