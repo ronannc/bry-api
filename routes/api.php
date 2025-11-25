@@ -6,4 +6,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('companies', CompanyController::class);
 Route::apiResource('persons', PersonController::class);
+Route::get('identidades/duplicadas', [PersonController::class, 'duplicadas']);
+
 

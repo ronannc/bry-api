@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonRequest;
+use App\Services\Person\DuplicateFinderService;
 use App\Services\Person\PersonCreateService;
 use App\Services\Person\PersonDeleteService;
 use App\Services\Person\PersonQueryService;
@@ -49,5 +50,14 @@ class PersonController extends Controller
     {
         $this->deleteService->delete($id);
         return response()->json(null, 204);
+    }
+
+    public function duplicadas(DuplicateFinderService $finder)
+    {
+        $groups = $finder->findGroups();
+        return response()->json([
+            'count' => count($groups),
+            'groups' => $groups
+        ]);
     }
 }
