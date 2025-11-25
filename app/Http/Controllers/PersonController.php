@@ -55,9 +55,6 @@ class PersonController extends Controller
     public function duplicadas(DuplicateFinderService $finder)
     {
         $groups = $finder->findGroups();
-        return response()->json([
-            'count' => count($groups),
-            'groups' => $groups
-        ]);
+        return response()->json($groups);
     }
 }
