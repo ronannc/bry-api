@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Services\StorageDocumentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\UpdatePersonDuplicatesCacheJob;
 
 class PersonUpdateService
 {
@@ -33,6 +34,8 @@ class PersonUpdateService
             if(isset($data['companies_id'])) {
                 $person->companies()->sync($data['companies_id']);
             }
+
+            UpdatePersonDuplicatesCacheJob::dispatch($person->id);
             return $person;
         });
     }

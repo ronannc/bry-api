@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Services\StorageDocumentService;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+use App\Jobs\UpdatePersonDuplicatesCacheJob;
 
 class PersonCreateService
 {
@@ -31,6 +32,8 @@ class PersonCreateService
 
             $person = Person::create($data);
             $person->companies()->attach($data['companies_id']);
+
+            UpdatePersonDuplicatesCacheJob::dispatch($person->id);
             return $person;
         });
     }
