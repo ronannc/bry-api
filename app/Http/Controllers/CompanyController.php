@@ -33,7 +33,7 @@ class CompanyController extends Controller
 
     public function show(Request $request, $id)
     {
-        $company = $this->queryService->search($request->get('filters', []), $id);
+        $company = $this->queryService->search($request->get('filters', []), false, $id);
         return response()->json($company);
     }
 

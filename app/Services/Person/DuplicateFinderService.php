@@ -21,7 +21,7 @@ class DuplicateFinderService
     {
         $this->trigramThreshold = $config['trigram_threshold'] ?? 0.40;
         $this->perRowLimit = $config['per_row_limit'] ?? 10;   // candidatos por linha
-        $this->chunkSize = $config['chunk_size'] ?? 1000;      // quantas linhas processar por chunk
+        $this->chunkSize = $config['chunk_size'] ?? 10;      // quantas linhas processar por chunk
     }
 
     /**
