@@ -38,7 +38,7 @@ class DuplicateFinderService
      *
      * @return array
      */
-    protected function findByCpf(): array
+    public function findByCpf(): array
     {
         $rows = Person::select('cpf', DB::raw('array_agg(id) as ids'))
             ->groupBy('cpf')
