@@ -25,4 +25,16 @@ class PersonDuplicatesService
         });
         return $groups;
     }
+
+    /**
+     * Retorna os IDs duplicados para um person específico.
+     *
+     * @param int $personId
+     * @return array
+     */
+    public function getDuplicates(int $personId): array
+    {
+        $row = PersonDuplicatesCache::where('person_id', $personId)->first();
+        return $row ? (array) $row->duplicate_ids : [];
+    }
 }
