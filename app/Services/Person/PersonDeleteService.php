@@ -10,11 +10,12 @@ class PersonDeleteService
     public function delete($id): void
     {
         $person = Person::findOrFail($id);
-        if ($person->document_path) {
-            Storage::disk('s3')->delete($person->document_path);
-        }
         $person->companies()->detach();
+        $documentPath = $person->document_path;
         $person->delete();
+        if ($documentPath) {
+            Storage::disk('s3')->delete($documentPath);
+        }
     }
 }
 

@@ -7,6 +7,7 @@ use App\Services\Company\CompanyCreateService;
 use App\Services\Company\CompanyDeleteService;
 use App\Services\Company\CompanyQueryService;
 use App\Services\Company\CompanyUpdateService;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
@@ -17,9 +18,11 @@ class CompanyController extends Controller
         protected CompanyDeleteService $deleteService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->queryService->search());
+        $paginated = $request->get('paginated', true);
+        $paginated = filter_var($paginated, FILTER_VALIDATE_BOOLEAN);
+        return response()->json($this->queryService->search($request->get('filters', []), $paginated));
     }
 
     public function store(CompanyRequest $request)
@@ -28,9 +31,9 @@ class CompanyController extends Controller
         return response()->json($company, 201);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $company = $this->queryService->search($id);
+        $company = $this->queryService->search($request->get('filters', []), $id);
         return response()->json($company);
     }
 

@@ -14,7 +14,8 @@ class PersonRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('persons') ?? '';
+        $id = $this->route('person') ?? '';
+
         return [
             'login' => ['required', 'string', 'max:255', Rule::unique('persons', 'login')->ignore($id)],
             'name' => 'required|string|max:255',
@@ -24,6 +25,7 @@ class PersonRequest extends FormRequest
             'password' => $this->isMethod('post') ? 'required|string|min:6' : 'nullable|string|min:6',
             'type' => 'required|string',
             'document' => 'nullable|file|mimes:pdf,jpg,jpeg|max:5120',
+            'companies_id' => 'nullable|array',
         ];
     }
 }

@@ -11,15 +11,16 @@ class PersonCreateService
 {
     public function __construct(
         protected StorageDocumentService $storageDocumentService
-    ) {}
+    )
+    {
+    }
 
     /**
      * @throws Throwable
      */
     public function create(array $data): Person
     {
-        return DB::transaction(function () use ($data)
-        {
+        return DB::transaction(function () use ($data) {
             if (isset($data['password'])) {
                 $data['password'] = bcrypt($data['password']);
             }
@@ -28,7 +29,9 @@ class PersonCreateService
                 $data = $this->storageDocumentService->storageDocument($data);
             }
 
-            return Person::create($data);
+            $person = Person::create($data);
+            $person->companies()->attach($data['companies_id']);
+            return $person;
         });
     }
 }

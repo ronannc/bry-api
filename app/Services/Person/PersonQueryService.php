@@ -11,7 +11,8 @@ class PersonQueryService
     public function search(array $filters, int $id = null): Paginator|Person
     {
         if ($id) {
-            $person = $this->person($filters)->findOrFail($id);
+            $person = $this->person($filters)->with(['companies'])->findOrFail($id);
+            $person['companies_id'] = $person->companies->pluck('id')->toArray();
             $person->append('document_url');
             return $person;
         }
