@@ -24,6 +24,7 @@ class BatchUpdatePersonDuplicatesCacheJob implements ShouldQueue
     public function handle(): void
     {
         $persons = Person::query()->offset($this->offset)->limit($this->limit)->get();
+
         foreach ($persons as $person) {
             UpdatePersonDuplicatesCacheJob::dispatch($person->id);
         }

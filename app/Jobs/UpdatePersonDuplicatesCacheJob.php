@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Jobs;
 
 use App\Models\Person;
@@ -22,21 +23,19 @@ class UpdatePersonDuplicatesCacheJob implements ShouldQueue
 
     public function handle(): void
     {
+        // Limiar de similaridade para encontrar duplicidades por nome
+        $limiar = 0.3;
+
         $person = Person::find($this->personId);
         if (!$person) return;
 
-        // Busca duplicidades por CPF
-        $cpfDuplicates = Person::where('cpf', $person->cpf)
-            ->where('id', '!=', $person->id)
-            ->pluck('id')->toArray();
+        $duplicates = $this->findDuplicatesByNameOrCpf($person, $limiar);
 
-        // Busca duplicidades por nome semelhante
-        $nameDuplicates = Person::where('id', '!=', $person->id)
-            ->where('name_metaphone', $person->name_metaphone)
-            ->whereRaw('similarity(name_normalized, ?) > 0.7', [$person->name_normalized])
-            ->pluck('id')->toArray();
-
-        $duplicates = array_unique(array_merge($cpfDuplicates, $nameDuplicates));
+        // Se não houver duplicidades, remove o registro
+        if (count($duplicates) == 0) {
+            DB::table('person_duplicates_cache')->where('person_id', $person->id)->delete();
+            return;
+        }
 
         // Atualiza ou cria registro na tabela de cache
         DB::table('person_duplicates_cache')->updateOrInsert(
@@ -46,6 +45,20 @@ class UpdatePersonDuplicatesCacheJob implements ShouldQueue
                 'updated_at' => now(),
             ]
         );
+    }
+
+    private function findDuplicatesByNameOrCpf($person, float $limiar): array
+    {
+        return Person::where(function ($query) use ($person, $limiar) {
+            $query->where('cpf', $person->cpf)
+                ->orWhere(function ($subQuery) use ($person, $limiar) {
+                    // Usa o dmetaphone para encontrar duplicidades por nome
+                    $subQuery->where('name_metaphone', $person->name_metaphone)
+                        // Usa a similaridade para encontrar duplicidades por nome.
+                        ->whereRaw('similarity(name_normalized, ?) > ?', [$person->name_normalized, $limiar]);
+                });
+        })->where('id', '!=', $person->id)
+            ->pluck('id')->toArray();
     }
 }
 

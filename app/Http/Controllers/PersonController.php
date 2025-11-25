@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonRequest;
-use App\Services\Person\DuplicateFinderService;
 use App\Services\Person\PersonCreateService;
 use App\Services\Person\PersonDeleteService;
 use App\Services\Person\PersonQueryService;
 use App\Services\Person\PersonUpdateService;
-use App\Services\Person\PersonDuplicatesCacheService;
+use App\Services\Person\PersonDuplicatesService;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -53,7 +52,7 @@ class PersonController extends Controller
         return response()->json(null, 204);
     }
 
-    public function duplicadas(PersonDuplicatesCacheService $cacheService)
+    public function duplicadas(PersonDuplicatesService $cacheService)
     {
         $groups = $cacheService->getAllGroups();
         return response()->json($groups);

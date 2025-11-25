@@ -63,6 +63,12 @@ services:
       - bry
 
   queue:
+    build:
+      args:
+        user: bry
+        uid: 1000
+      context: ./
+      dockerfile: .docker/Dockerfile
     image: bry
     container_name: bry-queue
     restart: always

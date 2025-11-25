@@ -19,7 +19,7 @@ return new class extends Migration
             RETURNS trigger AS $$
             BEGIN
                 NEW.name_normalized := lower(unaccent(NEW.name));
-                NEW.name_metaphone := metaphone(lower(unaccent(NEW.name)), 4);
+                NEW.name_metaphone := dmetaphone(lower(unaccent(NEW.name)));
                 RETURN NEW;
             END;
             $$ LANGUAGE plpgsql;

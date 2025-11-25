@@ -15,7 +15,7 @@ class PersonFactory extends Factory
         return [
             'login' => $this->faker->unique()->userName,
             'name' => $this->faker->name,
-            'cpf' => $this->faker->unique()->numerify('###.###.###-##'),
+            'cpf' => $this->faker->numerify('###.###.###-##'),
             'email' => $this->faker->unique()->safeEmail,
             'address' => $this->faker->address,
             'password' => bcrypt('senha123'),
