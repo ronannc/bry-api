@@ -43,3 +43,36 @@ Para rodar os testes:
 ```sh
 make test
 ```
+
+## Processamento de Duplicados
+
+Para identificar e processar pessoas duplicadas, utilize o comando Artisan abaixo:
+
+```sh
+php artisan person:duplicates
+```
+
+Este comando executa a lógica de detecção e tratamento de duplicidades, consolidando registros conforme regras de negócio.
+
+## Seeder de Pessoas
+
+Para popular o banco de dados com dados de exemplo de pessoas, execute:
+
+```sh
+php artisan db:seed --class=PersonSeeder
+```
+
+## Estratégia para Tratamento de Duplicados
+
+A identificação de duplicados é realizada por meio de uma Job, que executa em fila para cada pessoa e verifica se há registros similares. São considerados duplicados:
+
+- Pessoas com CPF igual.
+- Pessoas com nomes foneticamente semelhantes, utilizando duas abordagens:
+  - Algoritmo dmetaphone para comparação fonética dos nomes.
+  - Similaridade de nomes com limiar 3 (threshold), que pode ser ajustado conforme testes em outras bases de dados.
+
+Após o processamento, os dados são salvos em uma tabela de cache dos duplicados (`person_duplicates_cache`). Para consulta rápida, a API fornece a rota:
+
+```
+GET /api/identidades/duplicadas
+```
